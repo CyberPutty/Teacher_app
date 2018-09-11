@@ -5,6 +5,6 @@ const AssignmentSchema= require('./assignmentSchema');
 
  const models = {
     Teacher: mongoose.model('Teacher',TeacherSchema),
-    Assignments: mongoose.model('Assignment',AssignmentSchema)
+    Assignment: mongoose.model('Assignment',AssignmentSchema)
   };
 module.exports= models;

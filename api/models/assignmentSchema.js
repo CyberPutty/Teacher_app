@@ -25,7 +25,8 @@ const AssignmentSchema = new Schema({
   notes: {
     type: String,
     required: false
-  }
+  },
+  student: { type: Schema.Types.ObjectId, ref: 'Teacher.students' }
 });
 
 module.exports = AssignmentSchema;

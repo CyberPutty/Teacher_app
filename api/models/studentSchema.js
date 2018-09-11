@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 //const AssignmentSchema = require('./assignment_model');
-const index = require('./index');
-
 const StudentSchema = new Schema({
   name: {
     type: String,
@@ -25,8 +23,8 @@ const StudentSchema = new Schema({
     required: false
   }],
   assignments: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Assignments'
+    type: Schema.Types.ObjectId,
+    ref: 'Assignment'
   }]
 });
 
