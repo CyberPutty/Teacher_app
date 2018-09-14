@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import Students from './Components/Students';
 import AddStudents from './Components/AddStudents';
+import LoginRegister from './Components/LoginRegister';
 import { connect } from 'react-redux';
+import { addStudent, deleteStudent } from './ducks/students';
+import { addTeacher } from './ducks/teacher';
+import { loginUser } from './ducks/login'
 
 class App extends Component {
   constructor(props) {
@@ -11,7 +15,8 @@ class App extends Component {
     };
     this.getStudents = this.getStudents.bind(this);
     this.handleShowAddStudent = this.handleShowAddStudent.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    //this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAddStudent = this.handleAddStudent.bind(this);
   }
 
   getStudents(){
@@ -40,16 +45,17 @@ class App extends Component {
     }
   }
 
-  handleSubmit(e){
-    e.preventDefault();
+  handleAddStudent(student) {
+    this.props.addStudent(student);
     this.handleShowAddStudent();
   }
 
   render() {
-
+    if (!this.props.login) {
+      return <LoginRegister loginUser={this.props.loginUser} addTeacher={this.props.addTeacher} />
+    }
     return (
       <div className="container-fluid">
-
         <div className="row">
           <div className="banner text-center col">
             <h1>TeacherAppTitle</h1>
@@ -73,7 +79,7 @@ class App extends Component {
           <div className="student_view_right col col-8">
             {
               this.state.show_add_student ?
-                <AddStudents handleSubmit={this.handleSubmit} />
+                <AddStudents addStudent={this.handleAddStudent} />
                 : null
             }
           </div>
@@ -93,11 +99,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (login) => {
-      dispatch({
-        type: 'LOGIN',
-        payload: login
-      });
+    loginUser: (login) => {
+      dispatch(loginUser(login));
+    },
+    addStudent: (student) => {
+      dispatch(addStudent(student));
+    },
+    deleteStudent: (student) => {
+      dispatch(deleteStudent(student));
+    },
+    addTeacher: (teacher) => {
+      dispatch(addTeacher(teacher));
     }
   };
 };
