@@ -1,22 +1,28 @@
 import React, { Component } from 'react';
-import Students from './Components/Students';
+import Students from './Components/StudentSearch/Students';
+import StudentDisplay from './Components/StudentDisplay/StudentDisplay';
 import AddStudents from './Components/AddStudents';
-import LoginRegister from './Components/LoginRegister';
+import LoginRegister from './Components/Login/LoginRegister';
 import { connect } from 'react-redux';
 import { addStudent, deleteStudent } from './ducks/students';
 import { addTeacher } from './ducks/teacher';
-import { loginUser } from './ducks/login'
+import { getAssignments } from './ducks/assignments';
+import { loginUser } from './ducks/login';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      show_add_student: false
+      show_add_student: false,
+      show_current_student: false,
+      clickedStudent: ''
     };
     this.getStudents = this.getStudents.bind(this);
     this.handleShowAddStudent = this.handleShowAddStudent.bind(this);
     //this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddStudent = this.handleAddStudent.bind(this);
+    this.displayStudentOnClick = this.displayStudentOnClick.bind(this);
+    this.handleDeleteStudent = this.handleDeleteStudent.bind(this);
   }
 
   getStudents(){
@@ -37,9 +43,20 @@ class App extends Component {
     this.getStudents();
   }
 
+  displayStudentOnClick(id){
+    this.setState({
+      show_add_student: false,
+      show_current_student: true,
+      clickedStudent: id
+    });
+  }
+
   handleShowAddStudent() {
     if(this.state.show_add_student === false) {
-      this.setState({show_add_student: true});
+      this.setState({
+        show_current_student: false,
+        show_add_student: true
+      });
     } else {
       this.setState({show_add_student: false});
     }
@@ -48,6 +65,11 @@ class App extends Component {
   handleAddStudent(student) {
     this.props.addStudent(student);
     this.handleShowAddStudent();
+  }
+
+  handleDeleteStudent(student){
+    console.log('App: ' + JSON.stringify(student));
+    this.props.deleteStudent(student);
   }
 
   render() {
@@ -69,17 +91,30 @@ class App extends Component {
         </div>
 
         <div className="wrapper row">
-          <div className="student_view_left col col-4 text-center">
+          <div className="student_view_left col col-3 text-center">
 
             <Students
               students={this.props.students}
+              displayStudentOnClick={this.displayStudentOnClick}
             />
           </div>
 
-          <div className="student_view_right col col-8">
+          <div className="student_view_right col col-9">
             {
               this.state.show_add_student ?
                 <AddStudents addStudent={this.handleAddStudent} />
+                : null
+            }
+            {
+              this.state.show_current_student ?
+                <StudentDisplay
+                  teacher={this.props.teacher}
+                  getAssignments={this.props.getAssignments}
+                  students={this.props.students}
+                  clickedStudent={this.state.clickedStudent}
+                  assignments={this.props.assignments}
+                  deleteStudent={this.handleDeleteStudent}
+                />
                 : null
             }
           </div>
@@ -93,7 +128,7 @@ const mapStateToProps = (state) => {
     teacher: state.teacher,
     login: state.login,
     students: state.students,
-    assignments: state.assigments
+    assignments: state.assignments
   };
 };
 
@@ -110,6 +145,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     addTeacher: (teacher) => {
       dispatch(addTeacher(teacher));
+    },
+    getAssignments: (id) => {
+      dispatch(getAssignments(id));
     }
   };
 };

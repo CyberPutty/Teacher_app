@@ -4,10 +4,20 @@ import models from "./models/models";
 const Assignment = models.Assignment;
 const Teacher = models.Teacher;
 
-router.get('/', (req,res) => {
-  return res.status(400).json({
-    message: 'get fired'
-  });
+router.get('/:studentId', (req,res) => {
+  const id = req.params.studentId;
+  Assignment.find({student: id})
+    .then(data => {
+      res.status(200).json({
+        message: 'assignment get fired',
+        body: {
+          id: id,
+          data: data
+        }
+      });
+    })
+    .catch(err => console.error(err));
+
 });
 
 router.post("/", function(req, res) {
@@ -33,20 +43,24 @@ router.post("/", function(req, res) {
       assignment.save();
       student.assignments.push(assignment);
       teacher.save();
+      return res.status(200).json({
+        message: 'register fired',
+        assignment: assignment
+      });
     });
   }
 });
 
 router.put('/', (req,res) => {
   //const assignmentID = req.body.assignmentID;
-  return res.status(400).json({
+  return res.status(200).json({
     message: 'update fired'
   });
 });
 
 router.delete('/', (req, res) => {
   //const assignmentID = req.body.assignmentID;
-  return res.status(400).json({
+  return res.status(200).json({
     message: 'delete fired',
   });
 });
