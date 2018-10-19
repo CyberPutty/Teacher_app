@@ -73,9 +73,8 @@ export function loginStudents(students) {
 }
 
 export function deleteStudent(student){
-  console.log('studentDisplay: ' + JSON.stringify(student));
-  console.log('teach ' + student.teacherId);
-  console.log('stu ' + student.studentId);
+  console.log('::::::aoe::::::',student);
+
   return dispatch => {
     return fetch('/api/student', {
       method: 'DELETE',
@@ -88,18 +87,13 @@ export function deleteStudent(student){
         'Content-Type': 'application/json'
       }
     })
-      .then(res => {
-        console.log('res' + Object.keys(res));
-        console.log('ressdfasd' + JSON.stringify(res));
-        res.json()
-      })
+      .then(res => res.json())
       .then(data => {
-        console.log('delete data' + JSON.stringify(data));
-        console.log("student:" + data);
-        dispatch({
-          type: DELETE_STUDENT,
-          payload: data
-        });
+        console.log(data);
+        // dispatch({
+        //   type: DELETE_STUDENT,
+        //   payload: data
+        // });
       })
   };
 }

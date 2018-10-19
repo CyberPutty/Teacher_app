@@ -8,6 +8,7 @@ class StudentProfile extends Component {
   }
 
   handleDeleteStudent(){
+    console.log("amoantoheuasontehu:::::::::::::::::");
     console.log('delete student');
     let student = {
       teacherId: this.props.teacherId,

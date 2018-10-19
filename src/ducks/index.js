@@ -1,5 +1,5 @@
 import thunkMiddleware from 'redux-thunk';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import logger from 'redux-logger';
 
 import teacher from './teacher';
@@ -15,14 +15,15 @@ const rootReducer = combineReducers({
   teacher,
   assignments
 });
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export default rootReducer;
+//export default rootReducer;
 
 export function configureStore() {
   const store = createStore(
     rootReducer,
     {},
-    applyMiddleware(thunkMiddleware, logger)
+    composeEnhancers(applyMiddleware(thunkMiddleware, logger))
   );
   //add auth check
   return store;

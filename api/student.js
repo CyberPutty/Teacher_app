@@ -14,6 +14,7 @@ router.get('/', (req,res) => {
 
 router.post("/", (req, res) => {
   const teacherId = req.body.teacherId;
+ 
   // check for any required attributes and create the student
   if (teacherId) {
     Teacher.findById(teacherId, function(err, teacher) {
@@ -45,29 +46,25 @@ router.put('/', (req,res) => {
 router.delete('/', (req, res) => {
   const studentId = req.body.studentId;
   const teacherId = req.body.teacherId;
+  if(studentId && teacherId) {
+    Teacher.findById(teacherId, function(err, teacher){
+      if (err) res.json(err);
+      teacher.students.id(studentId).remove();
+      teacher.save().then( data => {
+        Assignment.deleteMany({ student: studentId }, function(err){
+          if (err) {
+            console.error('err ' + err);
+            return res.json({
+              message: 'Failed to delete student/assignments',
+            });
+          }
+        console.log('teaher in api data ' + data);
 
-  // if(studentId && teacherId) {
-  //   Teacher.findById(teacherId, function(err, teacher){
-  //     if (err) res.json(err);
-  //     teacher.students.id(studentId).remove();
-  //     teacher.save().then( data => {
-        // Assignment.deleteMany({ student: studentId }, function(err){
-        //   if (err) {
-        //     console.error('err ' + err);
-        //     return res.status(400).json({
-        //       message: 'Failed to delete student/assignments',
-        //     });
-        //   }
-        //console.log('teaher in api data ' + data);
-
-          res.status(200).json({
-            message: 'hoe',
-            data: 'meowmix'
-          });
-        // });
-    //  });
-    //});
-  //}
+          res.status(200).json(teacher);
+        });
+     });
+    });
+  }
 
 });
 
