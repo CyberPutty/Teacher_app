@@ -14,8 +14,6 @@ router.get('/', (req,res) => {
 
 router.post("/", (req, res) => {
   const teacherId = req.body.teacherId;
- 
-  // check for any required attributes and create the student
   if (teacherId) {
     Teacher.findById(teacherId, function(err, teacher) {
       if (err) res.json(err);
@@ -26,7 +24,6 @@ router.post("/", (req, res) => {
         age: req.body.age,
         goals: req.body.goals
       };
-      // may also be addtoset? will need to test
       teacher.students.push(newStudent);
       teacher.save(err => {
         if (err) res.json(err);
@@ -60,7 +57,21 @@ router.delete('/', (req, res) => {
           }
         console.log('teaher in api data ' + data);
 
-          res.status(200).json(teacher);
+  if(studentId && teacherId) {
+    Teacher.findById(teacherId, function(err, teacher){
+      if (err) res.json(err);
+      teacher.students.id(studentId).remove();
+      teacher.save().then( data => {
+
+        Assignment.deleteMany({ student: studentId }, function(err){
+          if (err) {
+            console.error('err ' + err);
+            return res.status(400).json({
+              message: 'Failed to delete student/assignments',
+            });
+          }
+
+          res.status(200).json(data);
         });
      });
     });

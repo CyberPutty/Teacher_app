@@ -12,6 +12,7 @@ class StudentDisplay extends Component {
     this.handleOnClickBanner = this.handleOnClickBanner.bind(this);
     this.displayAssignmentOnClick = this.displayAssignmentOnClick.bind(this);
     this.handleDeleteStudent = this.handleDeleteStudent.bind(this);
+    this.handlerender = this.handleRender.bind(this);
   }
 
   // componentDidMount() {
@@ -19,7 +20,6 @@ class StudentDisplay extends Component {
   // }
 
   displayAssignmentOnClick(id){
-    console.log(id);
     this.setState({
       currentClickedAssignment: id
     });
@@ -30,7 +30,6 @@ class StudentDisplay extends Component {
   }
 
   handleDeleteStudent(student){
-    console.log('studentDisplay: ' + JSON.stringify(student));
     this.props.deleteStudent(student);
   }
 
@@ -52,16 +51,14 @@ class StudentDisplay extends Component {
       }
       break;
     default:
-      console.log('failed switch');
+      console.error('failed switch');
     }
     this.setState({ showAssignments: newState });
   }
 
-  render() {
-    //let student;
+  handleRender(){
     let currentClickedStudent;
-    let currentAssignments;
-
+    //this grabs the currently clicked student from the full list
     if(this.props.students) {
       let id = this.props.clickedStudent;
       currentClickedStudent = this.props.students.filter(student => {
@@ -70,26 +67,31 @@ class StudentDisplay extends Component {
         }
       });
       currentClickedStudent = currentClickedStudent[0];
-
+      //this grabs the assignments of clicked student
       if (this.props.assignments){
         let countMatch = 0;
         let currentAssignmentsLength = currentClickedStudent.assignments.length;
-        let stateAssignmentsLength = this.props.assignments.length;
-        //compare current states assignments with students assignment id's
-        for(let i = 0; i < currentAssignmentsLength; i++){
-          for (let item of this.props.assignments){
-            if(item._id === currentClickedStudent.assignments[i]){
-              countMatch++;
-              break;
+        if (currentAssignmentsLength > 0) {
+          let stateAssignmentsLength = this.props.assignments.length;
+          //compare current states assignments with students assignment id's
+          for(let i = 0; i < currentAssignmentsLength; i++){
+            for (let item of this.props.assignments){
+              if(item._id === currentClickedStudent.assignments[i]){
+                countMatch++;
+              }
             }
           }
-        }
-        //when assignments dont match, fire a thunk to retreive them
-        if(countMatch != currentAssignmentsLength){
-          this.props.getAssignments(this.props.clickedStudent);
+          if(countMatch != currentAssignmentsLength){
+            this.props.getAssignments(this.props.clickedStudent);
+          }
         }
       }
+      return currentClickedStudent;
     }
+  }
+
+  render() {
+    let currentClickedStudent = this.handleRender();
 
     return (
       <div>
